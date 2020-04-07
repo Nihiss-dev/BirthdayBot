@@ -36,22 +36,36 @@ function write()
 // !add
 function add(msg, args)
 {
-	var birthday = {name: args[0], date: args[1]};
-	info.birthdays.push(birthday);
-	write();
+	if (args.length != 2)
+	{
+		help(msg);
+	}
+	else
+	{
+		var birthday = {name: args[0], date: args[1]};
+		info.birthdays.push(birthday);
+		write();
+	}
 }
 
 // !remove
 function remove(msg, args)
 {
-	for (var i = 0; i < info.birthdays.length; i++)
+	if (args.length != 1)
 	{
-		if (info.birthdays[i].name == args)
-		{
-			info.birthdays.splice(i,1);
-		}
+		help(msg);
 	}
-	write();
+	else
+	{
+		for (var i = 0; i < info.birthdays.length; i++)
+		{
+			if (info.birthdays[i].name == args)
+			{
+				info.birthdays.splice(i,1);
+			}
+		}
+		write();
+	}
 }
 
 // !clear

@@ -112,8 +112,8 @@ function sendMessageTo(username)
 function check()
 {
 	var today = new Date();
-	//if (today.getHours() == 15 && today.getMinutes() == 07)
-	//{
+	if (today.getHours() == 9 && today.getMinutes() == 30)
+	{
 		info.birthdays.forEach(function(birthday) {
 			var date = birthday.date.split('-');
 			var day = date[0];
@@ -123,7 +123,7 @@ function check()
 				sendMessageTo(birthday.name);
 			}
 		});
-	//}
+	}
 }
 
 console.log(client);

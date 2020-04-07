@@ -17,12 +17,9 @@ const fs = require('fs');
 
 function load()
 {
-	console.log('loading file');
 	var contents = fs.readFileSync("data.json");
 	var jsonContent =  JSON.parse(contents);
-	console.log("channel: ", jsonContent.channel);
 	info.channel = jsonContent.channel;
-	console.log("birthdays: ", jsonContent.birthdays);
 	info.birthdays = jsonContent.birthdays;
 }
 
@@ -109,7 +106,6 @@ function sendMessageTo(username)
 {
 	var channelId;
 	client.channels.cache.forEach(function(channel) {
-		console.log(channel.name);
 		if (channel.name == info.channel)
 		{
 			channelId = channel.id;
@@ -117,7 +113,6 @@ function sendMessageTo(username)
 		}
 	})
 	client.users.cache.forEach(function(user) {
-		console.log('username: ' + user.username + ' id: ' + user.id);
 		if (user.username == username)
 			client.channels.resolve(channelId).send("Happy birthay" + ` <@${user.id}>` + " :tada:");
 	});
@@ -159,16 +154,12 @@ client.on('message', msg => {
 	}*/
 	if (msg.content.substring(0,1) == '!')
 	{
-		console.log(msg);
 		var args = msg.content.substring(1).split(' ');
 		var cmd = args[0];
 		
 		args = args.splice(1);
 		switch (cmd)
 		{
-			case 'ping':
-				msg.channel.send('pong');
-				break;
 			case 'add':
 				add(msg, args)
 				break;

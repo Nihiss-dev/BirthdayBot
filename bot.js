@@ -1,57 +1,54 @@
 require('dotenv').config();
 
+'use strict';
+
+var infos = function() {
+	this.channel = "";
+	this.birthdays = [];
+}
+
+const info = new infos();
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
 /* CSV */
-const csv = require('csv-parser');
 const fs = require('fs');
-const createCsvWrite = require('csv-writer').createObjectCsvWriter;
-const csvWriter = createCsvWrite({
-	path: 'data.csv',
-	header: [
-	{id: 'name', title: 'Name'},
-	{id: 'date', title: 'Date'}
-]});
-
-var birthdays = [];
 
 function load()
 {
 	console.log('loading file');
-	fs.createReadStream('data.csv')
-		.pipe(csv())
-		.on('data', (row) => {
-			var birthday = {name: row.Name, date: row.Date};
-			birthdays.push(birthday);
-		})
-		.on('end', () => {
-			console.log('CSV file processed');
-		});
+	var contents = fs.readFileSync("data.json");
+	var jsonContent =  JSON.parse(contents);
+	console.log("channel: ", jsonContent.channel);
+	info.channel = jsonContent.channel;
+	console.log("birthdays: ", jsonContent.birthdays);
+	info.birthdays = jsonContent.birthdays;
 }
 
 function write()
 {
-	csvWriter.writeRecords(birthdays)
-	.then(() => console.log('CSV file written'));
+	console.log(JSON.stringify(info));
+	var infoString = JSON.stringify(info);
+	fs.writeFileSync("data.json", infoString);
 }
 
 // !add
 function add(msg, args)
 {
 	var birthday = {name: args[0], date: args[1]};
-	birthdays.push(birthday);
+	info.birthdays.push(birthday);
 	write();
 }
 
 // !remove
 function remove(msg, args)
 {
-	for (var i = 0; i < birthdays.length; i++)
+	for (var i = 0; i < info.birthdays.length; i++)
 	{
-		if (birthdays[i].name == args)
+		if (info.birthdays[i].name == args)
 		{
-			birthdays.splice(i,1);
+			info.birthdays.splice(i,1);
 		}
 	}
 	write();
@@ -65,7 +62,7 @@ function clear(msg)
 // !list
 function list(msg)
 {
-	birthdays.forEach(function(birthday) {
+	info.birthdays.forEach(function(birthday) {
 		msg.channel.send('name: ' + birthday.name + ' date: ' + birthday.date);
 	});
 }
@@ -88,14 +85,20 @@ function check()
 	if (date.getHours() == 17 && date.getMinutes() == 50)
 	{
 	}*/
-		//const channel = client.channels.find('test-bot', channelName);
-		console.log('check @Rayster');
-		client.users.cache.forEach(function(user) {
-			console.log('username: ' + user.username + ' id: ' + user.id);
-			if (user.username == "Rayster")
-				client.channels.resolve('696706965728133180').send(`check <@${user.id}>`);
-		});
-		//client.channels.resolve('696706965728133180').send('check <@Rayster#5916>');//.then(message => console.log(`Sent message: ${message.content}`)).catch(console.error);
+	var channelId;
+	client.channels.cache.forEach(function(channel) {
+		console.log(channel.name);
+		if (channel.name == info.channel)
+		{
+			channelId = channel.id;
+			console.log(channel.id);
+		}
+	})
+	client.users.cache.forEach(function(user) {
+		console.log('username: ' + user.username + ' id: ' + user.id);
+		/*if (user.username == "Rayster")
+			client.channels.resolve(channelId).send(`check <@${user.id}>`);*/
+	});
 }
 
 console.log(client);

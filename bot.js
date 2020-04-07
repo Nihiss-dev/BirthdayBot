@@ -84,6 +84,11 @@ function reload(msg)
 // !help
 function help(msg)
 {
+	msg.channel.send("List of commands:\n-`!add <Username> <Date DD-MM-YYYY>`: add this user in the birthdays list\n"+
+	"-`!remove <Username>`: remove this user from birthdays list\n"+
+	"-`!list`: show all users in list with their birthday date\n"+
+	"-`!setChannel <ChannelName>`: set the channel where the bot will wish birthday\n"+
+	"-`!help`: display this help");
 }
 
 function sendMessageTo(username)

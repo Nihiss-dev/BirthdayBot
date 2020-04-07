@@ -67,6 +67,13 @@ function list(msg)
 	});
 }
 
+// !setChannel
+function setChannel(msg, args)
+{
+	info.channel = args;
+	write();
+}
+
 // !reload
 function reload(msg)
 {
@@ -79,12 +86,8 @@ function help(msg)
 {
 }
 
-function check()
+function sendMessageTo(username)
 {
-	/*var date = new Date();
-	if (date.getHours() == 17 && date.getMinutes() == 50)
-	{
-	}*/
 	var channelId;
 	client.channels.cache.forEach(function(channel) {
 		console.log(channel.name);
@@ -96,17 +99,34 @@ function check()
 	})
 	client.users.cache.forEach(function(user) {
 		console.log('username: ' + user.username + ' id: ' + user.id);
-		/*if (user.username == "Rayster")
-			client.channels.resolve(channelId).send(`check <@${user.id}>`);*/
+		if (user.username == username)
+			client.channels.resolve(channelId).send("Happy birthay" + ` <@${user.id}>` + " :tada:");
 	});
+}
+
+function check()
+{
+	var today = new Date();
+	//if (today.getHours() == 15 && today.getMinutes() == 07)
+	//{
+		info.birthdays.forEach(function(birthday) {
+			var date = birthday.date.split('-');
+			var day = date[0];
+			var month = date[1];
+			if (today.getDate() == day && (today.getMonth() + 1) == month)
+			{
+				sendMessageTo(birthday.name);
+			}
+		});
+	//}
 }
 
 console.log(client);
 client.on('ready', () => {
 		console.log(`Logged in as ${client.user.tag}!`);
 		load();
-		//client.setInterval(check, 10000);
-		check();
+		/* check every minute */
+		client.setInterval(check, 60000);
 	});
 
 client.on('message', msg => {
@@ -144,6 +164,9 @@ client.on('message', msg => {
 				break;
 			case 'reload':
 				reload(msg);
+				break;
+			case 'setChannel':
+				setChannel(msg, args);
 				break;
 			case 'help':
 				help(msg);
